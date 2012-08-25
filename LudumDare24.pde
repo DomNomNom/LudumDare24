@@ -1,6 +1,9 @@
 // sound library
 import ddf.minim.*;
+
 /* unused
+import processing.opengl.*;
+
 import ddf.minim.signals.*;
 import ddf.minim.analysis.*;
 import ddf.minim.effects.*;

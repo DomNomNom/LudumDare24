@@ -46,7 +46,9 @@ class Engine {
         e.draw();
       popStyle(); popMatrix(); // ensure no graphical settings are transfered
     }
-    //println(entities); // DEBUG
+    // DEBUG
+    //println(entities);
+    //println(frameRate);
   }
 
   void addEntity(Entity e) {
@@ -137,7 +139,9 @@ class Engine {
       else if (currentState == state.menu) {
         if (changeTo == state.game) {
           player = new Player(300, 200);
-          grid = new Grid(10, 10);
+          grid = new Grid(50, 50);
+          grid.add(player);
+          grid.add(new Mover(2, 2));
           addEntity(player);
           addEntity(grid);
           removeEntityGroup(group.menu);

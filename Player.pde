@@ -1,10 +1,11 @@
-class Player extends Entity {
+class Player extends Mover {
   PVector target;
 
   float movementSpeed = .2;
   float angle;
 
   Player(float x, float y) {
+    super((int) x, (int) y);
     pos = new PVector(x, y);
     target = new PVector(0,0);
     groups = new group[] {group.game, group.player};
