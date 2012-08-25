@@ -1,6 +1,7 @@
 enum layer { // listed foreground - background
   invisible, // this and any layer listed before this will not be drawn.
   menu,
+  grid,
   player,
   bullet,
   enemy,

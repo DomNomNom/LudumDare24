@@ -7,6 +7,7 @@
 class Engine {
   // entity handling
   Player player;
+  Grid grid;
   Physics physics = new Physics();
   private ArrayList<Entity> entities = new ArrayList<Entity>();
   private HashMap<group, ArrayList<Entity>> groups = new HashMap<group, ArrayList<Entity>>();
@@ -136,9 +137,9 @@ class Engine {
       else if (currentState == state.menu) {
         if (changeTo == state.game) {
           player = new Player(300, 200);
+          grid = new Grid(10, 10);
           addEntity(player);
-          addEntity(new Mover(100, 100));
-          addEntity(new Mover(250, 200));
+          addEntity(grid);
           removeEntityGroup(group.menu);
         }
         else wasSafe = false;
