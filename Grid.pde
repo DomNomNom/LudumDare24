@@ -9,7 +9,7 @@ class Grid extends Entity {
   
   Map<Integer, Set<Mover>> tiles = new HashMap<Integer, Set<Mover>>();
   
-  Queue<MoveAction> todo = new LinkedList<MoveAction>();
+  private Queue<MoveAction> todo = new LinkedList<MoveAction>();
   
   PVector tileSize;
   
@@ -19,12 +19,6 @@ class Grid extends Entity {
     ht = tilesY;
     
     tileSize = new PVector(width/(float)wd,  height/(float)ht);
-    /*
-    tiles = new Tile[wd*ht];
-    for (int x=0; x<wd; ++x)
-      for (int y=0; y<ht; ++y)
-        tiles[x+y*wd] = new Tile(x, y);
-    */
   }
   
   void update(float dt) {
@@ -57,6 +51,7 @@ class Grid extends Entity {
   }
   
   void add(Mover e) {
+    println("add: " + (e.pos_x + wd*e.pos_y));
     thingsAt(e.pos_x, e.pos_y).add(e);
   }
   
@@ -69,11 +64,21 @@ class Grid extends Entity {
   }
   
   void move(Mover e, int from_x, int from_y, int to_x, int to_y) {
-    todo.add(new MoveAction(e, from_x, from_y, to_x, to_y)); // TODO queue
+    todo.add(new MoveAction(e, from_x, from_y, to_x, to_y));
   }
   
-  Integer pos(int x, int y){
+  Integer pos(int x, int y) {
+    if (!isInBounds(x, y)) println("OMG, out of bounds: " + x + " " + y);
     return x + y*wd;
+  }
+  
+  boolean isInBounds(int x, int y) {
+    return (
+      x >= 0 &&
+      y >= 0 &&
+      x < wd &&
+      y < ht
+    );
   }
   
   class MoveAction {
@@ -92,8 +97,10 @@ class Grid extends Entity {
       Integer from = pos(from_x, from_y);
       Integer to   = pos(to_x,   to_y  );
       
+      if (from == to) return;
+      
       if (!tiles.containsKey(from) ||  !tiles.get(from).contains(e)) 
-        println("OMG, you don't exist here!"); // TODO: proper error handling
+        println("OMG, you don't exist here: " + e + from); // TODO: proper error handling
       
       if (tiles.get(from).size() == 1  && !tiles.containsKey(to)) {
         // re-use our set on the other position
@@ -101,9 +108,10 @@ class Grid extends Entity {
         tiles.remove(from);
       }
       else {
+        println("ELSEL");
         if (!tiles.containsKey(to))
           tiles.put(to, new HashSet<Mover>());
-        tiles.get(from).add(e);
+        tiles.get(to).add(e);
         
         if (tiles.get(from).size() == 1)
           tiles.remove(from);

@@ -138,11 +138,11 @@ class Engine {
       }
       else if (currentState == state.menu) {
         if (changeTo == state.game) {
-          player = new Player(300, 200);
           grid = new Grid(50, 50);
+          player = new Player(3, 3);
           grid.add(player);
           grid.add(new Mover(2, 2));
-          addEntity(player);
+          //addEntity(player);
           addEntity(grid);
           removeEntityGroup(group.menu);
         }

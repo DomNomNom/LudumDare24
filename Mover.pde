@@ -1,9 +1,9 @@
-
-
 class Mover extends Entity {
 
   int pos_x;
   int pos_y;
+
+  color colour = #FF00FF;
 
   float movePeriod = 1000;
   float timeElapsed = 0;
@@ -31,7 +31,7 @@ class Mover extends Entity {
   }
   
   void draw() {
-    fill(#FF00FF);
+    fill(colour);
     rect(0, 0, 1, 1);
   }
 
