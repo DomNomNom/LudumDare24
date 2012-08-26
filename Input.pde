@@ -91,7 +91,10 @@ void mouseMoved() {
 }
 
 void mousePressed() {
-  if (engine.player != null) engine.player.shoot();
+  if (engine.grid != null) engine.grid.splitAt(
+    int(mouseX / engine.grid.tileSize.x),
+    int(mouseY / engine.grid.tileSize.y)
+  );
 }
 
 void keyPressed()  { input.handleKeyEvent(keyCode,  1); }

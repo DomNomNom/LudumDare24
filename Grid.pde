@@ -47,7 +47,6 @@ class Grid extends Entity {
   }
   
   void splitAt(int x, int y) {
-    println("splt!!");
     Integer pos = pos(x, y);
     Set<Mover> movers = thingsAt(pos);
     movers.clear();
