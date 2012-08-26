@@ -8,10 +8,11 @@ class Engine {
   // entity handling
   Player player;
   Grid grid;
-  Physics physics = new Physics();
   private ArrayList<Entity> entities = new ArrayList<Entity>();
   private HashMap<group, ArrayList<Entity>> groups = new HashMap<group, ArrayList<Entity>>();
   float prevTime;
+
+  HelpBar helpBar = null;
 
   GameState gameState = new GameState();
 
@@ -27,7 +28,6 @@ class Engine {
     float dt = mills - prevTime;
     prevTime = mills;
 
-    physics.doCollisions();
 
     // update and remove
     for (int i=entities.size()-1; i>=0; --i) { // We are deleting from the array so iterating backwards makes more sense
@@ -69,49 +69,6 @@ class Engine {
     groups.put(g, new ArrayList<Entity>());
   }
 
-
-  /*******************************************************\
-  |          Physics. what do think this does?            |
-  |                                                       |
-  \*******************************************************/
-  class Physics {
-    // if the objects in the corresponding groups collide, then do a certian action
-    Map<group, group> bothDie = new HashMap<group, group>();
-    Map<group, group> keyDies = new HashMap<group, group>();
-
-    Physics() {
-      bothDie.put(group.bullet, group.enemy);
-      keyDies.put(group.bullet, group.levelBounds);
-    }
-
-    void doCollisions() {
-      /*
-      these are quite lengthy versions of saying
-      for all in a, if they collide with any of b, do something (kill one of them)
-      */
-      for (group g : bothDie.keySet()) {
-        for (Entity a : groups.get(g)) {
-          for (Entity b : groups.get(bothDie.get(g))) {
-            if (a.collidesWith(b)) {
-              a.die();
-              b.die();
-            }
-          }
-        }
-      }
-      for (group g : keyDies.keySet()) {
-        for (Entity a : groups.get(g)) {
-          for (Entity b : groups.get(keyDies.get(g))) {
-            if (a.collidesWith(b)) {
-              a.die();
-            }
-          }
-        }
-      }
-    }
-
-  }
-
   /*******************************************************\
   | Handles transitions between game states               |
   |                                                       |
@@ -131,21 +88,20 @@ class Engine {
       if (currentState == state.gameInit) {
         if (changeTo == state.menu) {
           addEntity(new Background());
-          addEntity(new OutOfBounds());
           addEntity(new Menu());
         }
         else wasSafe = false;
       }
       else if (currentState == state.menu) {
         if (changeTo == state.game) {
+          removeEntityGroup(group.menu);
+          helpBar = new HelpBar();
+          addEntity(helpBar);
           grid = new Grid(50, 50);
           player = new Player(3, 3);
-          //grid.add(player);
-          grid.add(new Mover(2, 2,  1, 0));
-          grid.add(new Mover(6, 2, -1, 0));
-          //addEntity(player);
+          grid.add(new Mover(25-10, 25,  1, 0));
+          grid.add(new Mover(25+10, 25, -1, 0));
           addEntity(grid);
-          removeEntityGroup(group.menu);
         }
         else wasSafe = false;
       }
@@ -167,6 +123,11 @@ class Engine {
         if (changeTo == state.paused) {
           for (Entity e : groups.get(group.game)) e.updating = false; // freeze game
           addEntity(new PauseMenu());
+        }
+        else if (changeTo == state.game) {
+          removeEntityGroup(group.grid);
+          grid = new Grid(50, 50);
+          addEntity(grid);
         }
         else wasSafe = false;
       }

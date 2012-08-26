@@ -10,7 +10,7 @@ import ddf.minim.effects.*;
 */
 
 PVector center; // the center coordinate of the window. just a handy thing to have around.
-Minim minim;    // audio
+Minim minim;   // audio
 Resources resources;
 Engine engine;
 

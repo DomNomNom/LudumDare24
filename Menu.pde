@@ -10,11 +10,11 @@ class Menu extends Entity {
     // game label
     fill(250);
     textFont(resources.fonts.get("pauseLabel"), 48);
-    text("FireEngine", center.x, .8*center.y);
+    text("Pink Swarm Evolution", center.x, .8*center.y);
     
     textFont(resources.fonts.get("pauseLabel"), 26);
-    text("The metagame", center.x, center.y);
+    text("Try make something pretty\nwithout summoning the pink swarm", center.x, 1.1*center.y);
     
-    text("Press Spacebar to win", center.x, 1.5*center.y);
+    text("Press Spacebar", center.x, 1.7*center.y);
   }
 }

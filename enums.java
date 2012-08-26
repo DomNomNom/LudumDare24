@@ -21,6 +21,7 @@ enum group {
   background,
   game,
   player,
+  grid,
   bullet,
   enemy,
   levelBounds,

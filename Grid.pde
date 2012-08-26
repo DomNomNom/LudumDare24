@@ -16,6 +16,7 @@ class Grid extends Entity {
   
   Grid(int tilesX, int tilesY) {
     drawLayer = layer.grid;
+    groups = new group[] {group.game, group.grid};
     wd = tilesX;
     ht = tilesY;
     
@@ -44,6 +45,9 @@ class Grid extends Entity {
     }
     while (!toRemove.isEmpty())
       tiles.remove(toRemove.poll());
+      
+    if (tiles.size() > wd*ht/2)
+      engine.helpBar.needsRestarting = true;
   }
   
   void splitAt(int x, int y) {
@@ -98,7 +102,7 @@ class Grid extends Entity {
   }
   
   Integer pos(int x, int y) {
-    if (!isInBounds(x, y)) println("OMG, out of bounds: " + x + " " + y);
+    //if (!isInBounds(x, y)) println("OMG, out of bounds: " + x + " " + y);
     return x + y*wd;
   }
   
@@ -138,8 +142,10 @@ class Grid extends Entity {
       
       if (from == to) return;
       
-      if (!tiles.containsKey(from) ||  !tiles.get(from).contains(e)) 
+      if (!tiles.containsKey(from) ||  !tiles.get(from).contains(e)) {
         println("OMG, you don't exist here: " + e + from); // TODO: proper error handling
+        return;
+      }
       
       if (tiles.get(from).size() == 1  && !tiles.containsKey(to)) {
         // re-use our set on the other position

@@ -42,7 +42,21 @@ class Input {
         if (engine.gameState.currentState == state.menu)
           engine.gameState.changeState(state.game);
         else if (engine.gameState.currentState == state.paused)
-          engine.gameState.changeState(state.menu);
+          engine.gameState.changeState(state.game);
+        else if (engine.gameState.currentState == state.game) {
+          engine.gameState.changeState(state.paused);
+          engine.helpBar.pressedPause = true;
+        }
+      }
+      else if (isEvent("restart")) {
+        if (engine.gameState.currentState == state.paused) {
+          engine.gameState.changeState(state.game);
+          engine.gameState.changeState(state.game);
+          engine.gameState.changeState(state.paused);
+        }
+        else if (engine.gameState.currentState == state.game)
+          engine.gameState.changeState(state.game);
+        engine.helpBar.needsRestarting = false;
       }
     }
   }
@@ -91,10 +105,17 @@ void mouseMoved() {
 }
 
 void mousePressed() {
-  if (engine.grid != null) engine.grid.splitAt(
-    int(mouseX / engine.grid.tileSize.x),
-    int(mouseY / engine.grid.tileSize.y)
-  );
+  if (engine.grid != null) {
+    engine.grid.splitAt(
+      int(mouseX / engine.grid.tileSize.x),
+      int(mouseY / engine.grid.tileSize.y)
+    );
+    
+    // help-stats
+    engine.helpBar.clickCount += 1;
+    if (engine.gameState.currentState == state.paused)
+      engine.helpBar.clickCountWhilePaused += 1;
+  }
 }
 
 void keyPressed()  { input.handleKeyEvent(keyCode,  1); }

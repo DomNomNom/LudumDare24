@@ -1,4 +1,4 @@
-static float movePeriod = 1000;
+static float movePeriod = 200;
 
 
 class Mover extends Entity {
@@ -18,6 +18,13 @@ class Mover extends Entity {
     pos_y = y;
     vel_x = v_x;
     vel_y = v_y;
+    pushStyle();
+    //colorMode(HSB, 100);
+    //colour = color(random(100), 200, 200);
+    
+    //colorMode(RGB, 3);
+    //colour = color(v_x+1, v_y+1, 2);
+    popStyle();
   }
 
   void update(float dt) {

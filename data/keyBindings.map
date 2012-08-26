@@ -10,6 +10,8 @@ pause=>p
 select=>SPACE
 exit_game=>ESCAPE
 
+restart=>ENTER
+
 // These 4 binds will be over written by the wasd config as it follow later
 up=>UP
 down=>DOWN
