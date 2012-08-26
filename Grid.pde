@@ -10,6 +10,7 @@ class Grid extends Entity {
   Map<Integer, Set<Mover>> tiles = new HashMap<Integer, Set<Mover>>();
   
   private Queue<MoveAction> todo = new LinkedList<MoveAction>();
+  private Queue<Integer> toRemove = new LinkedList<Integer>();
   
   PVector tileSize;
   
@@ -25,16 +26,48 @@ class Grid extends Entity {
     for (Set<Mover> s : tiles.values())
       for (Mover e : s)
         e.update(dt);
+
     while (!todo.isEmpty())
       todo.poll().execute();
+    
+    // collision
+    for (Integer pos : tiles.keySet()) {
+      switch(tiles.get(pos).size()) {
+      case 1:
+        break;
+      case 2:
+        splitAt(getX(pos), getY(pos));
+        break;
+      default:
+        toRemove.add(pos);
+      }
+    }
+    while (!toRemove.isEmpty())
+      tiles.remove(toRemove.poll());
   }
+  
+  void splitAt(int x, int y) {
+    println("splt!!");
+    Integer pos = pos(x, y);
+    Set<Mover> movers = thingsAt(pos);
+    movers.clear();
+    add(new Mover(x, y,  0,  1));
+    add(new Mover(x, y,  0, -1));
+    add(new Mover(x, y,  1,  0));
+    add(new Mover(x, y, -1,  0));
+    for (Mover m : movers) 
+      m.step(); // gurantee a move next frame
+  }
+  
+  int getX(Integer pos) { return pos % wd; }
+  int getY(Integer pos) { return pos / wd; }
   
   void draw() {
     for (Integer pos : tiles.keySet()) {
       pushStyle();
       pushMatrix();
-        int x = pos % wd;
-        int y = pos / wd;
+        int x = getX(pos);
+        int y = getY(pos);
         translate(x*tileSize.x, y*tileSize.y);
         scale(tileSize.x, tileSize.y);
         rectMode(CORNER);
@@ -51,12 +84,10 @@ class Grid extends Entity {
   }
   
   void add(Mover e) {
-    println("add: " + (e.pos_x + wd*e.pos_y));
-    thingsAt(e.pos_x, e.pos_y).add(e);
+    thingsAt(pos(e.pos_x, e.pos_y)).add(e);
   }
   
-  Set<Mover> thingsAt(int x, int y) {
-    Integer pos = pos(x, y);
+  Set<Mover> thingsAt(Integer pos) {
     if (!tiles.containsKey(pos))
       tiles.put(pos, new HashSet<Mover>());
       
@@ -81,6 +112,14 @@ class Grid extends Entity {
     );
   }
   
+  
+  
+  
+  
+  
+  
+  
+  
   class MoveAction {
     Mover e;
     int from_x, from_y, to_x, to_y;
@@ -94,6 +133,7 @@ class Grid extends Entity {
     }
 
     void execute() {
+      
       Integer from = pos(from_x, from_y);
       Integer to   = pos(to_x,   to_y  );
       
@@ -104,14 +144,13 @@ class Grid extends Entity {
       
       if (tiles.get(from).size() == 1  && !tiles.containsKey(to)) {
         // re-use our set on the other position
-        tiles.put(to, tiles.get(from));
+        if (isInBounds(to_x, to_y))
+          tiles.put(to, tiles.get(from));
         tiles.remove(from);
       }
       else {
-        println("ELSEL");
-        if (!tiles.containsKey(to))
-          tiles.put(to, new HashSet<Mover>());
-        tiles.get(to).add(e);
+        if (isInBounds(to_x, to_y))
+          thingsAt(to).add(e);
         
         if (tiles.get(from).size() == 1)
           tiles.remove(from);
@@ -120,4 +159,5 @@ class Grid extends Entity {
       }
     }
   }
+  
 }

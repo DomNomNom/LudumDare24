@@ -4,12 +4,12 @@ class Player extends Mover {
   //float movementSpeed = .2;
   float angle;
   
-  color colour = #00FF00;
+  color colour = #FFFFFF;
   
   float movePeriod = 100;
 
   Player(int x, int y) {
-    super(x, y);
+    super(x, y, 0,0);
     pos_x = x;
     pos_y = y;
     target = new PVector(0,0);
